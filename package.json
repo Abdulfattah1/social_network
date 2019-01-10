@@ -4,7 +4,7 @@
   "description": "it's similer to facebook",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app",
+    "start": "node app",
     "start-server": "node app"
   },
   "author": "Abdulfattah khudari",
