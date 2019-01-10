@@ -20,4 +20,4 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use("/auth", AuthRouter);
 app.use("/posts", postsRouter);
-server.listen(3000);
+server.listen(process.env.PORT || 3000);
