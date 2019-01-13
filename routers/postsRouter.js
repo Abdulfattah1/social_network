@@ -16,4 +16,23 @@ router.post(
   postController.createPost
 );
 
+router.post(
+  "/like",
+  checkAuth,
+  check("postId").isLength({
+    min: 1
+  }),
+  postController.like
+);
+
+router.post(
+  "/disLike",
+  checkAuth,
+  check("postId").isLength({
+    min: 1
+  }),
+  postController.disLike
+);
+
+router.get("/getAllPosts", checkAuth, postController.getAllPosts);
 module.exports = router;

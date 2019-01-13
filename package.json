@@ -4,7 +4,7 @@
   "description": "it's similer to facebook",
   "main": "app.js",
   "scripts": {
-    "start": "node app",
+    "start": "nodemon app",
     "start-server": "node app"
   },
   "author": "Abdulfattah khudari",
@@ -22,5 +22,5 @@
     "cors": "^2.8.5",
     "nodemon": "^1.18.9"
   },
-  "repository": "https://github.com/Abdulfattah1/social-media.git"
+  "repository": "https://github.com/Abdulfattah1/social_media.git"
 }
