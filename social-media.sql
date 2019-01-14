@@ -53,27 +53,27 @@ select postId , firstName , lastName , personalImage , textContent , dateOfPosti
 join posts on users.id = posts.userId join likes on posts.postId = likes.postId
 order by dateOfPosting desc;
 
-select * from users;
+select 
+count(likes.postId) as NumberOfLikes ,posts.postId,users.email from posts 
+left join users on posts.userId = users.id 
+left join likes on posts.postId = likes.postId
+group by posts.postId;
 
 
-select * from likes;
+select * from likes join posts on likes.postId = posts.postId join users on posts.userId = users.id;
 
-delete from likes where userId >=1;
 
-select count(*) numberOfLikes  , posts.postId , users.firstName , users.lastName , users.personalImage ,  posts.dateOfPosting , posts.textContent  from likes  
-right join posts on likes.postId = posts.postId 
-join users on users.id = posts.userId
+
+
+
+select
+users.email,
+posts.postId,
+posts.textContent,
+likes.postId,
+count(likes.postId)
+from posts left join likes on posts.postId = likes.postId join users on posts.postId
 group by posts.postId
-order by posts.dateOfPosting;
-
-
-select * from posts left join likes on posts.postId = likes.postId 
-join users on users.id = posts.userId
-group by posts.postId
-order by posts.dateOfPosting
-
-
-
 
 
 
