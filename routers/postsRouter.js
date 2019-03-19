@@ -34,5 +34,34 @@ router.post(
   postController.disLike
 );
 
-router.get("/getAllPosts", checkAuth, postController.getAllPosts);
+router.post(
+  "/checkLike",
+  checkAuth,
+  check("postId").isLength({
+    min: 1
+  }),
+  postController.checkLike
+);
+
+router.get("/getAllPosts", postController.getAllPosts);
+
+router.post("/getNumberOfLikes", checkAuth, postController.getNumberOfLikes);
+
+router.get("/getLikesWithNames", checkAuth, postController.getLikesWithNames);
+
+router.delete("/deletePost", checkAuth, postController.deletePost);
+
+router.post(
+  "/editPost",
+  checkAuth,
+  check(["textContent"])
+    .isLength({
+      min: 3
+    })
+    .withMessage("it must be more than 2 chracter"),
+  check("postId")
+    .isEmpty()
+    .withMessage("post id is required"),
+  postController.editPost
+);
 module.exports = router;

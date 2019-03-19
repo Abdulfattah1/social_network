@@ -17,9 +17,22 @@ module.exports = class Post {
 
   static getAllPosts() {
     return db.execute(
-      `select count(*) numberOfLikes  , posts.postId , users.firstName , users.lastName , users.personalImage ,  posts.dateOfPosting , posts.textContent  from likes  
-      right join posts on likes.postId = posts.postId 
-      join users on users.id = posts.userId
+      `select 
+      count(likes.postId) as NumberOfLikes ,
+      posts.postId,
+      users.firstName , 
+      users.lastName ,
+      users.personalImage,
+      
+      posts.postId , 
+      posts.userId,
+      posts.imageUrl,
+      posts.pdfUrl,
+      posts.textContent,
+      posts.dateOfPosting
+      from posts 
+      left join users on posts.userId = users.id 
+      left join likes on posts.postId = likes.postId
       group by posts.postId
       order by posts.dateOfPosting desc`
     );
@@ -37,5 +50,51 @@ module.exports = class Post {
       postId,
       userId
     ]);
+  }
+
+  static checkLike(userId, postId) {
+    return db.execute(
+      "select * from likes where likes.userId = ? and likes.postId = ?",
+      [userId, postId]
+    );
+  }
+
+  static getNumberOfLikes(postId) {
+    return db.execute(
+      `select count(likes.postId) as count from posts left join likes on posts.postId = likes.postId where posts.postId =  ?`,
+      [postId]
+    );
+  }
+
+  static getLikesWithNames(postId) {
+    return db.execute(
+      `select users.firstName , users.lastName from likes 
+      inner join users on likes.userId = users.id where likes.postId = ?`,
+      [postId]
+    );
+  }
+
+  static deleteAllLikes(postId) {
+    return db.execute("delete from likes where postId = ?", [postId]);
+  }
+
+  static deleteAllCommnets(postId) {
+    return db.execute("delete from comments where postId = ?", [postId]);
+  }
+
+  static deletePost(postId, userId) {
+    this.deleteAllLikes(postId).then(result => {});
+    this.deleteAllCommnets(postId).then(result => {});
+    return db.execute("delete from posts where postId = ? and userId = ?", [
+      postId,
+      userId
+    ]);
+  }
+
+  static editPost(postId, userId, textContent) {
+    return db.execute(
+      "update posts set textContent = ? where postId = ? and userId = ?",
+      [textContent, postId, userId]
+    );
   }
 };
