@@ -15,6 +15,10 @@ module.exports = class Post {
     );
   }
 
+  static getPost(postId) {
+    return db.execute("select * from posts where postId=?", [postId]);
+  }
+
   static getAllPosts() {
     return db.execute(
       `select 

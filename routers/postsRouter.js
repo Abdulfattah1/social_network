@@ -1,13 +1,34 @@
 const express = require("express");
 const checkAuth = require("../middleWares/check_auth");
 const { check } = require("express-validator/check");
+const multer = require("multer"); // to upload files
+
 const router = express.Router();
 
 const postController = require("../controllers/postsController");
 
+const type = {
+  "image/jpeg": "jpg",
+  "image/jpng": "png"
+};
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    let name =
+      file.originalname.split(" ")[0].trim() +
+      Date.now() +
+      "." +
+      type[file.mimetype];
+    cb(null, name);
+  }
+});
+
 router.post(
   "/createPost",
   checkAuth,
+  multer({ storage: storage }).single("image"),
   check("textarea")
     .isLength({
       min: 3

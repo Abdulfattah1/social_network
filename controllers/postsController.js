@@ -15,21 +15,28 @@ module.exports.createPost = (req, res, next) => {
       message: responseErrorArray
     });
   }
-
-  const post = new Post(req.body.textarea, userInfo.userId);
+  let imageUrl;
+  if (req.file) {
+    let url = req.protocol + "://" + req.get("host");
+    imageUrl = url + "/images/" + req.file.filename || null;
+  } else {
+    imageUrl = null;
+  }
+  const post = new Post(req.body.textarea, userInfo.userId, imageUrl);
   post
     .createPost()
     .then(result => {
       if (result.affectedRows <= 0) {
         return res.json({
           success: false,
-          message: "fail to add the post"
+          message: "faild to add the post"
         });
       }
       return res.json({
         success: true,
         message: "the post was added successfully",
-        postId: result[0].insertId
+        postId: result[0].insertId,
+        imageUrl: imageUrl || null
       });
     })
     .catch(err => {

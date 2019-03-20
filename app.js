@@ -16,6 +16,7 @@ const server = http.createServer(app);
 //middleware
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join("images")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use("/auth", AuthRouter);
