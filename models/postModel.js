@@ -19,6 +19,30 @@ module.exports = class Post {
     return db.execute("select * from posts where postId=?", [postId]);
   }
 
+  static getPosts(start,numberOfPosts) {
+    return db.execute(
+      `select
+      count(likes.postId) as NumberOfLikes ,
+      posts.postId,
+      users.firstName , 
+      users.lastName ,
+      users.personalImage,
+      
+      posts.postId , 
+      posts.userId,
+      posts.imageUrl,
+      posts.pdfUrl,
+      posts.textContent,
+      posts.dateOfPosting
+      from posts 
+      left join users on posts.userId = users.id 
+      left join likes on posts.postId = likes.postId
+      group by posts.postId
+      order by posts.dateOfPosting desc
+      LIMIT ?,?
+      `,[start,numberOfPosts]);
+  }
+
   static getAllPosts() {
     return db.execute(
       `select 

@@ -66,6 +66,8 @@ router.post(
 
 router.get("/getAllPosts", postController.getAllPosts);
 
+router.get("/getPosts",postController.getPosts);
+
 router.post("/getNumberOfLikes", checkAuth, postController.getNumberOfLikes);
 
 router.get("/getLikesWithNames", checkAuth, postController.getLikesWithNames);

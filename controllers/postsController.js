@@ -107,9 +107,6 @@ module.exports.getAllPosts = (req, res, next) => {
 
   Post.getAllPosts()
     .then(result => {
-      console.log(
-        Math.floor(now - result[0][0].dateOfPosting.getTime()) / 60000
-      );
       return res.json({
         success: true,
         message: "it was done correctly",
@@ -124,6 +121,31 @@ module.exports.getAllPosts = (req, res, next) => {
       });
     });
 };
+
+
+module.exports.getPosts = (req, res, next) => {
+
+  let page = (+req.query.page);
+  let number = +req.query.number;
+
+  let start, numberOfPosts;
+  start = page * number;
+  numberOfPosts = number;
+  Post.getPosts(start, numberOfPosts)
+    .then(POSTS => {
+      return res.json({
+        success: true,
+        message: "it was loaded correctly",
+        posts: POSTS[0]
+      })
+    })
+    .catch(err=>{
+      res.json({
+        success:false,
+        message:err
+      })
+    })
+}
 
 module.exports.like = (req, res, next) => {
   const err = validationResult(req);
