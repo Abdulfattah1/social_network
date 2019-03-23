@@ -26,7 +26,6 @@ module.exports = class Post {
   static getPosts(start, numberOfPosts) {
     return db.execute(
       `select
-      count(likes.postId) as NumberOfLikes ,
       posts.postId,
       users.firstName , 
       users.lastName ,
@@ -37,17 +36,21 @@ module.exports = class Post {
       posts.imageUrl,
       posts.pdfUrl,
       posts.textContent,
-      posts.dateOfPosting
+      posts.dateOfPosting,
+      numbers.numberOfLikes,
+      numbers.numberOfComments
       from posts 
-      left join users on posts.userId = users.id 
-      left join likes on posts.postId = likes.postId
-      group by posts.postId
+      left join users on posts.userId = users.id
+      LEFT JOIN numbers on posts.postId = numbers.postId
       order by posts.dateOfPosting desc
       LIMIT ?,?
       `,
       [start, numberOfPosts]
     );
   }
+
+
+
 
   static getAllPosts() {
     return db.execute(
@@ -75,6 +78,13 @@ module.exports = class Post {
   static increaseLikes(postId) {
     return db.execute(
       "update numbers set numberOfLikes = numberOfLikes + ? where postId=?",
+      [1, postId]
+    );
+  }
+
+  static dicreaseLikes(postId) {
+    return db.execute(
+      "update numbers set numberOfLikes = numberOfLikes - ? where postId=?",
       [1, postId]
     );
   }
@@ -123,9 +133,14 @@ module.exports = class Post {
     return db.execute("delete from comments where postId = ?", [postId]);
   }
 
+  static deleteNumbers(postId) {
+    console.log(postId);
+    return db.execute("delete from numbers where postId = ? ",postId);
+  }
   static deletePost(postId, userId) {
     this.deleteAllLikes(postId).then(result => {});
     this.deleteAllCommnets(postId).then(result => {});
+    // this.deleteNumbers(postId).then(result=>{});
     return db.execute("delete from posts where postId = ? and userId = ?", [
       postId,
       userId

@@ -188,6 +188,8 @@ module.exports.disLike = (req, res, next) => {
   const userId = req.userInformation.userId;
   Post.disLike(postId, userId)
     .then(result => {
+      return Post.dicreaseLikes(postId);
+    }).then(numbers=>{
       return res.json({
         success: true,
         message: "disLiked !"

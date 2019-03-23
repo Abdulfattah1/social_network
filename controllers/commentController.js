@@ -1,4 +1,5 @@
 const Comment = require("../models/comment");
+const Post = require("../models/PostModel");
 module.exports.addComment = (req, res, next) => {
   const userId = req.userInformation.userId;
   const data = req.body;
@@ -39,3 +40,11 @@ module.exports.getComments = (req, res, next) => {
       });
     });
 };
+
+module.exports.deleteComment = (req,res,next)=>{
+  const postId = req.params.id;
+  const userId = req.userInformation.userId;
+  Comment.delete(postId,userId)
+  .then(res=>{
+  })
+}
