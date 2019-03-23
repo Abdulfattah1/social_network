@@ -20,7 +20,10 @@ module.exports.createPost = (req, res, next) => {
     let url = req.protocol + "://" + req.get("host");
     imageUrl = url + "/images/" + req.file.filename || null;
   } else {
-    imageUrl = null;
+    imageUrl = "";
+  }
+  if (!req.body.textarea) {
+    req.body.textContent = "";
   }
   const post = new Post(req.body.textarea, userInfo.userId, imageUrl);
   post
@@ -32,11 +35,13 @@ module.exports.createPost = (req, res, next) => {
           message: "faild to add the post"
         });
       }
-      return res.json({
-        success: true,
-        message: "the post was added successfully",
-        postId: result[0].insertId,
-        imageUrl: imageUrl || null
+      Post.insertNumbers(result[0].insertId).then(number => {
+        res.json({
+          success: true,
+          message: "the post was added successfully",
+          postId: result[0].insertId,
+          imageUrl: imageUrl || ""
+        });
       });
     })
     .catch(err => {
@@ -122,10 +127,8 @@ module.exports.getAllPosts = (req, res, next) => {
     });
 };
 
-
 module.exports.getPosts = (req, res, next) => {
-
-  let page = (+req.query.page);
+  let page = +req.query.page;
   let number = +req.query.number;
 
   let start, numberOfPosts;
@@ -137,15 +140,15 @@ module.exports.getPosts = (req, res, next) => {
         success: true,
         message: "it was loaded correctly",
         posts: POSTS[0]
-      })
+      });
     })
-    .catch(err=>{
+    .catch(err => {
       res.json({
-        success:false,
-        message:err
-      })
-    })
-}
+        success: false,
+        message: err
+      });
+    });
+};
 
 module.exports.like = (req, res, next) => {
   const err = validationResult(req);
@@ -157,18 +160,19 @@ module.exports.like = (req, res, next) => {
   }
   const postId = req.body.postId;
   const userId = req.userInformation.userId;
+
   Post.like(postId, userId)
     .then(result => {
-      return res.json({
+      return Post.increaseLikes(postId);
+    })
+    .then(result => {
+      res.json({
         success: true,
-        message: "liked !"
+        message: "liked"
       });
     })
     .catch(err => {
-      return res.json({
-        success: false,
-        message: err
-      });
+      console.log(err);
     });
 };
 

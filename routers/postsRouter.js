@@ -29,11 +29,6 @@ router.post(
   "/createPost",
   checkAuth,
   multer({ storage: storage }).single("image"),
-  check("textarea")
-    .isLength({
-      min: 3
-    })
-    .withMessage("it should be more than 3 charactors"),
   postController.createPost
 );
 
@@ -66,7 +61,7 @@ router.post(
 
 router.get("/getAllPosts", postController.getAllPosts);
 
-router.get("/getPosts",postController.getPosts);
+router.get("/getPosts", postController.getPosts);
 
 router.post("/getNumberOfLikes", checkAuth, postController.getNumberOfLikes);
 

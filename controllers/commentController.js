@@ -6,6 +6,9 @@ module.exports.addComment = (req, res, next) => {
   comment
     .addComment()
     .then(result => {
+      return Comment.increaseNumberOfComments(data.postId);
+    })
+    .then(number => {
       return res.json({
         success: true,
         message: "your comment was add correctly"

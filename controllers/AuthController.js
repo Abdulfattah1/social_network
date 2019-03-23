@@ -86,7 +86,7 @@ module.exports.signin = (req, res, next) => {
 
               "i bet you know in you can't even guess it so go lay down and play with yourself",
               {
-                expiresIn: "1h"
+                expiresIn: "24h"
               }
             );
             return res.json({

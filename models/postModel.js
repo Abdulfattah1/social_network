@@ -15,11 +15,15 @@ module.exports = class Post {
     );
   }
 
+  static insertNumbers(postId) {
+    return db.execute("insert into numbers(postId) values(?)", [postId]);
+  }
+
   static getPost(postId) {
     return db.execute("select * from posts where postId=?", [postId]);
   }
 
-  static getPosts(start,numberOfPosts) {
+  static getPosts(start, numberOfPosts) {
     return db.execute(
       `select
       count(likes.postId) as NumberOfLikes ,
@@ -40,7 +44,9 @@ module.exports = class Post {
       group by posts.postId
       order by posts.dateOfPosting desc
       LIMIT ?,?
-      `,[start,numberOfPosts]);
+      `,
+      [start, numberOfPosts]
+    );
   }
 
   static getAllPosts() {
@@ -63,6 +69,13 @@ module.exports = class Post {
       left join likes on posts.postId = likes.postId
       group by posts.postId
       order by posts.dateOfPosting desc`
+    );
+  }
+
+  static increaseLikes(postId) {
+    return db.execute(
+      "update numbers set numberOfLikes = numberOfLikes + ? where postId=?",
+      [1, postId]
     );
   }
 

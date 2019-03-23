@@ -23,12 +23,12 @@ foreign key(userId) references users(id)
 );
 
 create table likes (
+id integer not null auto_increment primary key,
 dateOfPosting timestamp default now(),
 userId integer not null ,
 postId integer not null ,
 foreign key(userId) references users(id),
 foreign key(postId) references posts(postId),
-primary key(userId,postId)
 );
 
 
@@ -44,39 +44,12 @@ foreign key(userId) references users(id),
 foreign key(postId) references posts(postId)
 )
 
-
-
-
-select *  from users inner join posts on users.id = posts.userId;
-
-select postId , firstName , lastName , personalImage , textContent , dateOfPosting from users 
-join posts on users.id = posts.userId join likes on posts.postId = likes.postId
-order by dateOfPosting desc;
-
-select 
-count(likes.postId) as NumberOfLikes ,posts.postId,users.email from posts 
-left join users on posts.userId = users.id 
-left join likes on posts.postId = likes.postId
-group by posts.postId;
-
-
-select * from likes join posts on likes.postId = posts.postId join users on posts.userId = users.id;
-
-
-
-
-
-select
-users.email,
-posts.postId,
-posts.textContent,
-likes.postId,
-count(likes.postId)
-from posts left join likes on posts.postId = likes.postId join users on posts.postId
-group by posts.postId
-
-
-
+create table numbers (
+postId integer not null ,
+foreign key(postId) references posts(postId),
+numberOfLikes integer default 0,
+numberOfComments integer default 0
+);
 
 
 
